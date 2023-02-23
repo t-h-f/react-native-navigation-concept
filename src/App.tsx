@@ -1,5 +1,8 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useRef} from 'react';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // State
@@ -15,9 +18,35 @@ const Stack = createNativeStackNavigator();
 
 function App(): JSX.Element {
   const token = useUserStore(state => state.token);
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef<string>();
+
+  const NavContainerOnReady = () => {
+    routeNameRef.current = navigationRef.getCurrentRoute()!.name;
+  };
+
+  const NavContainerOnStateChange = async () => {
+    const previousRouteName = routeNameRef.current;
+    const currentRouteName = navigationRef.getCurrentRoute()!.name;
+    const trackScreenView = (currentRouteName: string) => {
+      // Track screen view in analytics integration here
+      // E.g. nalytics.track({ screenViewed: currentRouteName });
+      console.log(`Screen viewed: ${currentRouteName}`);
+    };
+
+    if (previousRouteName !== currentRouteName) {
+      routeNameRef.current = currentRouteName;
+
+      // Replace the line below to add the tracker from a mobile analytics SDK
+      await trackScreenView(currentRouteName);
+    }
+  };
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={NavContainerOnReady}
+      onStateChange={NavContainerOnStateChange}>
       <Stack.Navigator>
         {(!token && (
           <Stack.Screen
