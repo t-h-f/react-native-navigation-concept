@@ -9,15 +9,24 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import useUserStore from './stores/user';
 
 // Screens
-import HomeScreen from './screens/Home';
 import LoginScreen from './screens/LoginScreen';
-import NotificationsScreen from './screens/Notifications';
+import HomeScreen from './screens/Home';
 import ProfileScreen from './screens/ProfileScreen';
+import NotificationsScreen from './screens/Notifications';
+import EventsScreen from './screens/EventsScreen';
+import EventScreen from './screens/EventScreen';
 
-const Stack = createNativeStackNavigator();
+// Stacks
+import {RootStackParamList} from '@screens/stacks/RootStack';
+import {MainScreensParamList} from '@screens/stacks/MainStack';
+import {EventsScreensParamList} from '@screens/stacks/EventsStack';
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const MainStack = createNativeStackNavigator<MainScreensParamList>();
+const EventsStack = createNativeStackNavigator<EventsScreensParamList>();
 
 function App(): JSX.Element {
-  const token = useUserStore(state => state.token);
+  const {token: isLoggedIn} = useUserStore(state => state);
   const navigationRef = useNavigationContainerRef();
   const routeNameRef = useRef<string>();
 
@@ -30,7 +39,7 @@ function App(): JSX.Element {
     const currentRouteName = navigationRef.getCurrentRoute()!.name;
     const trackScreenView = (currentRouteName: string) => {
       // Track screen view in analytics integration here
-      // E.g. nalytics.track({ screenViewed: currentRouteName });
+      // E.g. analytics.track({ screenViewed: currentRouteName });
       console.log(`Screen viewed: ${currentRouteName}`);
     };
 
@@ -42,49 +51,84 @@ function App(): JSX.Element {
     }
   };
 
+  const EventsStackScreens = () => (
+    <EventsStack.Navigator>
+      <EventsStack.Screen
+        name="EventsScreen"
+        component={EventsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <EventsStack.Screen
+        name="EventScreen"
+        component={EventScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </EventsStack.Navigator>
+  );
+
+  const MainStackScreens = () => (
+    <MainStack.Navigator>
+      <MainStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <MainStack.Screen
+        name="EventsStack"
+        component={EventsStackScreens}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <MainStack.Group screenOptions={{presentation: 'modal'}}>
+        <MainStack.Screen
+          name="NotificationsScreen"
+          component={NotificationsScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <MainStack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </MainStack.Group>
+    </MainStack.Navigator>
+  );
+
   return (
     <NavigationContainer
       ref={navigationRef}
       onReady={NavContainerOnReady}
       onStateChange={NavContainerOnStateChange}>
-      <Stack.Navigator>
-        {(!token && (
-          <Stack.Screen
+      <RootStack.Navigator>
+        {(isLoggedIn && (
+          <RootStack.Screen
+            name="MainScreens"
+            component={MainStackScreens}
+            options={{
+              headerShown: false,
+            }}
+          />
+        )) || (
+          <RootStack.Screen
             name="LoginScreen"
             component={LoginScreen}
             options={{
               headerShown: false,
-              animationTypeForReplace: 'pop',
             }}
           />
-        )) || (
-          <>
-            <Stack.Screen
-              name="HomeScreen"
-              component={HomeScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Group screenOptions={{presentation: 'modal'}}>
-              <Stack.Screen
-                name="NotificationsScreen"
-                component={NotificationsScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="ProfileScreen"
-                component={ProfileScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            </Stack.Group>
-          </>
         )}
-      </Stack.Navigator>
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }

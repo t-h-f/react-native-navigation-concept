@@ -2,10 +2,10 @@ import React from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Button, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../utils/stack';
+import {MainScreensParamList} from '@stacks/MainStack';
 
 const NotificationsScreen = () => {
-  const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const nav = useNavigation<NativeStackNavigationProp<MainScreensParamList>>();
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>

@@ -9,6 +9,7 @@ This repo explores installing the latest version of React Native CLI and impleme
 - Controlling navigation across these various states
 - State controlled auth token
 - 100% TypeScript coverage for stack params, screen props, screen component props, and stores
+- Screen tracking logic for analytics integration
 
 ### Requirements
 

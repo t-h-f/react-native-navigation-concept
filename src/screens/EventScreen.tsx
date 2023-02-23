@@ -2,17 +2,18 @@ import React from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Button, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {MainScreensParamList} from '@stacks/MainStack';
+import {EventsScreensParamList} from '@stacks/EventsStack';
 
-const ProfileScreen = () => {
-  const nav = useNavigation<NativeStackNavigationProp<MainScreensParamList>>();
+const EventsScreen = () => {
+  const nav =
+    useNavigation<NativeStackNavigationProp<EventsScreensParamList>>();
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Your profile</Text>
+      <Text>Event here</Text>
       <Button title="Back" onPress={() => nav.canGoBack() && nav.goBack()} />
     </View>
   );
 };
 
-export default ProfileScreen;
+export default EventsScreen;

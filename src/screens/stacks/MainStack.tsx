@@ -1,6 +1,6 @@
-export type RootStackParamList = {
+export type MainScreensParamList = {
   HomeScreen: {name: string} | undefined;
-  LoginScreen: undefined;
   NotificationsScreen: undefined;
   ProfileScreen: undefined;
+  EventsStack: undefined;
 };
